@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose Your Plan - ScaleHeight</title>
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="title">Choose Your Plan</h1>
+    <p class="subtitle">
+      Subscribe start earning per emoji picked and movies watched.<br>
+      Higher plans offer more daily earnings and better earnings per movies & emojis picked.
+    </p>
+
+    <div class="plan-status" id="planStatus">
+      <p id="statusText"><i class="fa fa-check-circle"></i> Active Free Plan Subscription</p>
+      <span id="expiryText"></span>
+    </div>
+
+    <!-- Free Plan -->
+    <div class="plan-card">
+      <div class="plan-header free">FREE</div>
+      <div class="plan-body">
+        <h2>Free Plan</h2>
+        <p class="price">FREE <span>/3 days</span></p>
+        <ul>
+          <li>2 emoji per day</li>
+          <li>$0.40 per rating</li>
+          <li>Max $0.80/day</li>
+          <li>Limited video & emoji access</li>
+          <li>Priority support</li>
+        </ul>
+        <button class="btn current">Current Plan</button>
+      </div>
+    </div>
+
+    <!-- Starter Plan -->
+    <div class="plan-card">
+      <div class="plan-header paid">$12.00</div>
+      <div class="plan-body">
+        <h2>Starter Plan</h2>
+        <p class="price">$12.00<span>/6 months</span></p>
+        <ul>
+          <li>5 emojis per day</li>
+          <li>$1.84 per emoji picked</li>
+          <li>Max $5.68/day</li>
+          <li>Unlimited video access</li>
+          <li>VIP support</li>
+        </ul>
+        <a href="payment.html" class="btn upgrade">Upgrade Now</a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+body {
+  background-color: white;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  padding: 30px 15px;
+}
+.container {
+  max-width: 450px;
+  width: 100%;
+}
+.title {
+  text-align: center;
+  color: #2ea8ff;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.subtitle {
+  text-align: center;
+  font-size: 15px;
+  color: black;
+  margin-bottom: 25px;
+  line-height: 1.4;
+}
+.plan-status {
+  background: #f7fbfd;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid blue;
+  text-align: center;
+  margin-bottom: 25px;
+}
+.plan-status p {
+  font-size: 15px;
+  color: black;
+}
+.plan-status i {
+  color: #00ff7f;
+  margin-right: 6px;
+}
+.plan-status span {
+  color: #7cdfff;
+  font-size: 14px;
+  font-weight: 500;
+}
+.plan-card {
+  background: #c8f0ff;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 25px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  transition: 0.3s;
+}
+.plan-card:hover {
+  transform: translateY(-3px);
+}
+.plan-header {
+  padding: 10px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+.plan-header.free {
+  background: #88bfff;
+  color: #fff;
+}
+.plan-header.paid {
+  background: #0077ff;
+  color: #fff;
+}
+.plan-body {
+  padding: 20px;
+  text-align: center;
+}
+.plan-body h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: black;
+}
+.price {
+  font-size: 24px;
+  font-weight: 700;
+  color: black;
+  margin-bottom: 15px;
+}
+.price span {
+  font-size: 14px;
+  color: #aaa;
+}
+ul {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 20px;
+  color: black;
+}
+ul li {
+  margin: 8px 0;
+  font-size: 14px;
+}
+.btn {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font-size: 15px;
+}
+.btn.current {
+  background: #88bfff;
+  color: black;
+  cursor: default;
+}
+.btn.upgrade {
+  background: linear-gradient(90deg, #007bff, #00bfff);
+  color: #fff;
+}
+  </style>
+
+  <script>
+    // === 3-Day Timer Logic ===
+    const statusText = document.getElementById("statusText");
+    const expiryText = document.getElementById("expiryText");
+    const planStatus = document.getElementById("planStatus");
+
+    const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
+
+    // Check if signup date exists in localStorage
+    let signupDate = localStorage.getItem("signupDate");
+
+    if (!signupDate) {
+      signupDate = Date.now();
+      localStorage.setItem("signupDate", signupDate);
+    }
+
+    const expiryDate = parseInt(signupDate) + THREE_DAYS;
+    const remainingTime = expiryDate - Date.now();
+
+    if (remainingTime > 0) {
+      // Active Free Plan
+      const expire = new Date(expiryDate);
+      expiryText.textContent = "Expires on " + expire.toDateString();
+    } else {
+      // Plan Expired
+      statusText.innerHTML = `<i class="fa fa-times-circle"></i> Free Plan Expired`;
+      expiryText.innerHTML = `<a href="payment.html" class="btn upgrade" style="display:inline-block;margin-top:8px;">Upgrade to access all features</a>`;
+      planStatus.style.background = "#ff3b3b";
+    }
+  </script>
+</body>
+</html>

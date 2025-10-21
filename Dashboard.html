@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root {
+      --bg: #0b0b0d;
+      --panel: #36b3ff;
+      --muted: #9aa0a6;
+      --accent-a: #36b3ff;
+      --accent-b: #6ac6ff;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      background: #f7fbfd;
+      color: black;
+      padding-bottom: 92px;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 12px 16px 36px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .greeting {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .top-icons {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .top-icons i {
+      font-size: 18px;
+      color: #007bff;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .top-icons i:hover {
+      color: #0056b3;
+    }
+
+    .balance-card {
+      background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(20, 30, 60, 0.45);
+      color: white;
+    }
+
+    .balance-amount {
+      font-size: 30px;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+
+    .plan-group {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .plan-pill {
+      background: #f0f8ff;
+      color: #007bff;
+      padding: 6px 12px;
+      border-radius: 12px;
+      border: 1.5px solid #007bff;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .convert-btn {
+      background: #007bff;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      transition: background 0.3s ease;
+    }
+
+    .convert-btn:hover {
+      background: #0056b3;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .action {
+      background: var(--panel);
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      color: white;
+      transition: background 0.2s ease;
+    }
+
+    .action:hover {
+      background: #1c9ef7;
+    }
+
+    .ic {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .overview {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+    }
+
+    .txn-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .txn {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid #c8f0ff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .nav-row {
+      width: 100%;
+      max-width: 640px;
+      padding: 12px 18px;
+      border-radius: 16px 16px 0 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 12px;
+      color: #007bff;
+      cursor: pointer;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+      margin-bottom: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="greeting"><span id="greetText">Good morning</span></div>
+      <div class="top-icons">
+        <i class="fa fa-envelope" id="supportIcon" title="Support"></i>
+        <i class="fa fa-user" id="profileIcon" title="Profile"></i>
+      </div>
+    </div>
+
+    <section class="balance-card">
+      <div style="font-weight:700">Available Balance</div>
+      <div class="balance-amount" id="balanceAmount">$9.00</div>
+      <div style="margin-top:10px;display:flex;gap:10px;align-items:center;justify-content:space-between">
+        <div style="font-weight:700">
+          Total Earned
+          <div id="totalEarned" style="font-weight:800;margin-top:4px">$9.00</div>
+        </div>
+        <div class="plan-group">
+          <div class="plan-pill">Free Plan</div>
+          <button class="convert-btn" id="convertBtn">Convert to ₦</button>
+        </div>
+      </div>
+    </section>
+
+    <nav class="actions">
+      <div class="action" id="watchAction">
+        <div class="ic"><i class="fa fa-play-circle"></i></div>
+        <div>Watch</div>
+      </div>
+      <div class="action" id="withdrawAction">
+        <div class="ic"><i class="fa fa-wallet"></i></div>
+        <div>Withdraw</div>
+      </div>
+      <div class="action" id="upgradeAction">
+        <div class="ic"><i class="fa fa-arrow-up"></i></div>
+        <div>Upgrade</div>
+      </div>
+      <div class="action" id="pickAction">
+        <div class="ic"><i class="fa fa-smile"></i></div>
+        <div>Pick Emoji</div>
+      </div>
+    </nav>
+
+    <section class="overview">
+      <div class="card">
+        <div>Videos Watched</div>
+        <div id="videosWatched" style="font-weight:800;margin-top:8px">0 / 2</div>
+        <div style="height:8px;background:white;border-radius:8px;margin-top:10px;overflow:hidden">
+          <i id="progressFill" style="display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));"></i>
+        </div>
+      </div>
+      <div class="card">
+        <div>Emoji Engagements</div>
+        <div id="emojiEngaged" style="font-weight:800;margin-top:8px">0 / 2</div>
+        <div style="height:8px;background:white;border-radius:8px;margin-top:10px;overflow:hidden">
+          <i id="emojiProgress" style="display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));"></i>
+        </div>
+      </div>
+    </section>
+    
+    <div class="join-info">
+  <div id="joinSince"></div>
+  <div id="planExpiry"></div>
+</div>
+<style>
+    .join-info {
+  background: #ffffff;
+  border: 2px solid #c8f0ff;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-top: 14px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #007bff;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+.join-info div {
+  margin-bottom: 6px;
+}
+
+</style>
+
+    <section style="margin-top:16px">
+      <h3 style="margin:0 0 10px 0;">Recent Transactions</h3>
+      <div class="txn-list" id="txnList"></div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <div class="bottom-nav">
+    <div class="nav-row">
+      <div class="nav-item" id="navHome"><i class="fa fa-home"></i><div>Home</div></div>
+      <div class="nav-item" id="navVideos"><i class="fa fa-video"></i><div>Videos</div></div>
+      <div class="nav-item" id="navPickFooter"><i class="fa fa-smile"></i><div>Pick Emoji</div></div>
+      <div class="nav-item" id="navMe"><i class="fa fa-user"></i><div>Me</div></div>
+    </div>
+  </div>
+
+<script>
+    // --- JOIN DATE & PLAN EXPIRY ---
+const joinSince = document.getElementById('joinSince');
+const planExpiry = document.getElementById('planExpiry');
+
+let joinDate = localStorage.getItem('we_join_date');
+let expiryDate = localStorage.getItem('we_plan_expiry');
+
+if (!joinDate || !expiryDate) {
+  const now = new Date();
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  joinDate = now.toLocaleDateString(undefined, options);
+
+  // expiry is 3 days later
+  const expiry = new Date();
+  expiry.setDate(now.getDate() + 3);
+  expiryDate = expiry.toLocaleDateString(undefined, options);
+
+  localStorage.setItem('we_join_date', joinDate);
+  localStorage.setItem('we_plan_expiry', expiryDate);
+}
+
+joinSince.textContent = `🗓️ Joined since: ${joinDate}`;
+planExpiry.textContent = `⏳ Current plan expires on: ${expiryDate}`;
+
+// --- CHECK FOR EXPIRY ---
+const today = new Date();
+const expDate = new Date(expiryDate);
+if (today >= expDate) {
+  Swal.fire({
+    icon: 'warning',
+    title: 'Plan Expired',
+    text: 'Your free plan has expired. Please upgrade to continue earning and accessing features.',
+    confirmButtonText: 'Upgrade Now',
+    confirmButtonColor: '#007bff',
+  }).then(() => {
+    window.location.href = 'package.html';
+  });
+}
+
+(function(){
+  const RATE = 1000;
+  const LS = {
+    balance:'we_balance_usd_v2',
+    total:'we_total_usd_v2',
+    txns:'we_txns_v2',
+    emoji:'we_emoji_engaged_v2'
+  };
+
+  const balanceAmount=document.getElementById('balanceAmount');
+  const totalEarned=document.getElementById('totalEarned');
+  const convertBtn=document.getElementById('convertBtn');
+  const txnList=document.getElementById('txnList');
+  const emojiCount=document.getElementById('emojiEngaged');
+  const emojiProgress=document.getElementById('emojiProgress');
+  const greetText=document.getElementById('greetText');
+
+  // --- GREETING BASED ON TIME ---
+  const hour = new Date().getHours();
+  let greeting = "Hello";
+  if(hour >= 5 && hour < 12) greeting = "Good morning";
+  else if(hour >= 12 && hour < 17) greeting = "Good afternoon";
+  else greeting = "Good evening";
+  greetText.textContent = greeting;
+
+  function fmtUSD(v){return '$'+Number(v).toFixed(2);}
+  function fmtNGN(v){return '₦'+Number(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+  let showingNGN=false;
+  convertBtn.addEventListener('click',()=>{
+    const bal=parseFloat(localStorage.getItem(LS.balance)||'0');
+    const tot=parseFloat(localStorage.getItem(LS.total)||'0');
+    if(!showingNGN){
+      balanceAmount.textContent=fmtNGN(bal*RATE);
+      totalEarned.textContent=fmtNGN(tot*RATE);
+      convertBtn.textContent='Convert to $';
+      showingNGN=true;
+    }else{
+      balanceAmount.textContent=fmtUSD(bal);
+      totalEarned.textContent=fmtUSD(tot);
+      convertBtn.textContent='Convert to ₦';
+      showingNGN=false;
+    }
+  });
+
+  function render(){
+    const bal=parseFloat(localStorage.getItem(LS.balance)||'0');
+    const tot=parseFloat(localStorage.getItem(LS.total)||'0');
+    const txns=JSON.parse(localStorage.getItem(LS.txns)||'[]');
+    const emoji=Number(localStorage.getItem(LS.emoji)||'0');
+    balanceAmount.textContent=fmtUSD(bal);
+    totalEarned.textContent=fmtUSD(tot);
+    emojiCount.textContent=`${emoji}/2`;
+    emojiProgress.style.width=Math.min(100,(emoji/2)*100)+'%';
+
+    txnList.innerHTML='';
+    txns.slice().reverse().forEach(tx=>{
+      const el=document.createElement('div');
+      el.className='txn';
+      el.innerHTML=`
+        <div>
+          <div style="font-weight:700">${tx.title}</div>
+          <div style="font-size:13px;color:gray">${tx.narrator||''}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:800">${fmtUSD(tx.usd)}</div>
+          <div style="font-size:13px;color:gray">${fmtNGN(tx.usd*RATE)}</div>
+        </div>`;
+      txnList.appendChild(el);
+    });
+  }
+
+  render();
+
+  // SweetAlert for Locked Features
+  function upgradeAlert(){
+    Swal.fire({
+      icon:'error',
+      title:'Cannot Access This Feature',
+      text:'Upgrade your current plan to unlock this feature.',
+      showCancelButton:true,
+      confirmButtonText:'Upgrade Now',
+      cancelButtonText:'Back',
+      confirmButtonColor:'#007bff',
+      cancelButtonColor:'#6c757d'
+    }).then(r=>{
+      if(r.isConfirmed) window.location.href='package.html';
+    });
+  }
+
+  // Footer & Button Actions
+  document.getElementById('navHome').addEventListener('click',()=>location.reload());
+  document.getElementById('navVideos').addEventListener('click',upgradeAlert);
+  document.getElementById('watchAction').addEventListener('click',upgradeAlert);
+  document.getElementById('navPickFooter').addEventListener('click',()=>window.location.href='Pick emoji.html');
+  document.getElementById('navMe').addEventListener('click',()=>window.location.href='profile.html');
+  document.getElementById('pickAction').addEventListener('click',()=>window.location.href='Pick emoji.html');
+  document.getElementById('supportIcon').addEventListener('click',()=>window.location.href='support.html');
+  document.getElementById('profileIcon').addEventListener('click',()=>window.location.href='profile.html');
+  document.getElementById('withdrawAction').addEventListener('click',()=>window.location.href='withdraw.html');
+  document.getElementById('upgradeAction').addEventListener('click',()=>window.location.href='package.html');
+})();
+// 🔁 Sync across all pages (Dashboard, Emoji, Withdraw)
+window.addEventListener("storage", function(e) {
+  if (
+    e.key === "we_balance_usd_v2" ||
+    e.key === "we_total_usd_v2" ||
+    e.key === "we_txns_v2" ||
+    e.key === "we_emoji_engaged_v2"
+  ) {
+    location.reload(); // auto refresh when balance/txns change
+  }
+});
+
+// 💰 Initial registration cashback (runs only once)
+if (!localStorage.getItem("we_registered_once")) {
+  const now = new Date().toLocaleString();
+  const LS = {
+    balance: "we_balance_usd_v2",
+    total: "we_total_usd_v2",
+    txns: "we_txns_v2",
+  };
+  const initAmt = 9.0;
+  const bal = parseFloat(localStorage.getItem(LS.balance) || "0");
+  const tot = parseFloat(localStorage.getItem(LS.total) || "0");
+  const txns = JSON.parse(localStorage.getItem(LS.txns) || "[]");
+
+  localStorage.setItem(LS.balance, (bal + initAmt).toFixed(2));
+  localStorage.setItem(LS.total, (tot + initAmt).toFixed(2));
+  txns.push({
+    title: "Registration Cashback",
+    narrator: "Registration bonus credited from Scale Height",
+    usd: initAmt,
+    date: now,
+    status: "Completed"
+  });
+  localStorage.setItem(LS.txns, JSON.stringify(txns));
+  localStorage.setItem("we_registered_once", "true");
+}
+
+</script>
+</body>
+</html>

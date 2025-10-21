@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pick Emoji </title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body {font-family:'Poppins',sans-serif;background:#f4f6fb;margin:0;padding:0;}
+    .container {max-width:600px;margin:40px auto;padding:0 10px;}
+    .dashboard {background:#007bff;color:white;padding:12px 20px;text-align:center;border-radius:10px;font-size:16px;font-weight:600;margin-bottom:25px;}
+    .post {background:#fff;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);margin-bottom:25px;overflow:hidden;}
+    .post img {width:100%;height:200px;object-fit:cover;}
+    .post-body {padding:15px 20px;}
+    .post-header {display:flex;justify-content:space-between;font-size:14px;color:#888;margin-bottom:10px;}
+    .post-content {font-size:16px;margin-bottom:10px;color:#333;}
+    .like-section {display:flex;align-items:center;gap:6px;cursor:pointer;color:#e63946;font-weight:600;margin-top:6px;}
+    .like-section i {font-size:18px;}
+    .comment-section {margin-top:15px;border-top:1px solid #eee;padding-top:10px;}
+    .comment-section input,.comment-section select {padding:8px;font-size:14px;border-radius:6px;border:1px solid #ccc;}
+    .comment-section button {background:#007bff;color:white;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:14px;margin-left:6px;}
+    .comment-section button:hover{background:#0056b3;}
+    .comments-list{margin-top:10px;font-size:14px;}
+    .comment-item{background:#f8f9fa;border-radius:8px;padding:6px 10px;margin-top:6px;}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="dashboard">
+      Balance: $<span id="balance">0.00</span><br>
+      Emoji Engagements: <span id="emojiCount">0</span> / 2
+    </div>
+
+    <!-- POST 1 -->
+    <div class="post" data-likes="20">
+      <img src="Image.jpg" alt="Post">
+      <div class="post-body">
+        <div class="post-header"><span>Posted by Admin</span></div>
+        <div class="post-content">🎉 Welcome! React earn & repeat.</div>
+
+        <div class="like-section" onclick="handleEngagement(this)">
+          <i class="fa fa-heart"></i> <span class="likes-count">20</span> Likes
+        </div>
+
+        <div class="comment-section">
+          <div>
+            <select class="emoji-picker">
+              <option value="❤️">❤️</option><option value="🔥">🔥</option><option value="😀">😀</option>
+              <option value="😂">😂</option><option value="👍">👍</option>
+            </select>
+            <input type="text" placeholder="Write a comment..." class="comment-input">
+            <button onclick="addComment(this)">Post</button>
+          </div>
+          <div class="comments-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST 2 -->
+    <div class="post" data-likes="15">
+      <img src="Logo.jpg" alt="Post">
+      <div class="post-body">
+        <div class="post-header"><span>Posted by Admin</span></div>
+        <div class="post-content">🚀 New update is live! Pick emojis & earn.</div>
+
+        <div class="like-section" onclick="handleEngagement(this)">
+          <i class="fa fa-heart"></i> <span class="likes-count">15</span> Likes
+        </div>
+
+        <div class="comment-section">
+          <div>
+            <select class="emoji-picker">
+              <option value="❤️">❤️</option><option value="🔥">🔥</option><option value="😀">😀</option>
+              <option value="😂">😂</option><option value="👍">👍</option>
+            </select>
+            <input type="text" placeholder="Write a comment..." class="comment-input">
+            <button onclick="addComment(this)">Post</button>
+          </div>
+          <div class="comments-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST 3 -->
+    <div class="post" data-likes="8">
+      <img src="Image2.jpg" alt="Post">
+      <div class="post-body">
+        <div class="post-header"><span>Posted by Admin</span></div>
+        <div class="post-content">ScaleHeight is  multinational</div>
+
+        <div class="like-section" onclick="handleEngagement(this)">
+          <i class="fa fa-heart"></i> <span class="likes-count">8</span> Likes
+        </div>
+
+        <div class="comment-section">
+          <div>
+            <select class="emoji-picker">
+              <option value="❤️">❤️</option><option value="🔥">🔥</option><option value="😀">😀</option>
+              <option value="😂">😂</option><option value="👍">👍</option>
+            </select>
+            <input type="text" placeholder="Write a comment..." class="comment-input">
+            <button onclick="addComment(this)">Post</button>
+          </div>
+          <div class="comments-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const LS = {
+    balance: 'we_balance_usd_v2',
+    total: 'we_total_usd_v2',
+    txns: 'we_txns_v2',
+    emoji: 'we_emoji_engaged_v2'
+  };
+
+  const EARN_PER_ENGAGEMENT = 0.40;
+  let balance = parseFloat(localStorage.getItem(LS.balance) || '0');
+  let total = parseFloat(localStorage.getItem(LS.total) || '0');
+  let emojiEngaged = parseInt(localStorage.getItem(LS.emoji) || '0', 10);
+  let txns = JSON.parse(localStorage.getItem(LS.txns) || '[]');
+
+  document.getElementById('balance').textContent = balance.toFixed(2);
+  document.getElementById('emojiCount').textContent = emojiEngaged;
+
+  function updateDisplay() {
+    document.getElementById('balance').textContent = balance.toFixed(2);
+    document.getElementById('emojiCount').textContent = emojiEngaged;
+    localStorage.setItem(LS.balance, balance);
+    localStorage.setItem(LS.total, total);
+    localStorage.setItem(LS.emoji, emojiEngaged);
+    localStorage.setItem(LS.txns, JSON.stringify(txns));
+  }
+
+  function canEngage() {
+    return emojiEngaged < 2;
+  }
+
+  function rewardUser() {
+    balance += EARN_PER_ENGAGEMENT;
+    total += EARN_PER_ENGAGEMENT;
+    emojiEngaged++;
+
+    txns.push({
+      title: 'Emoji Engagement',
+      narrator: 'Earned from Emoji Engagement',
+      usd: EARN_PER_ENGAGEMENT,
+      date: new Date().toLocaleString(),
+      status: 'Completed'
+    });
+
+    updateDisplay();
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Engagement Successful!',
+      text: 'You earned $0.40 for engaging!',
+      confirmButtonColor: '#007bff'
+    });
+  }
+
+  function showUpgradeAlert() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Failed to Engage',
+      text: 'Upgrade your current plan to continue earning rewards.',
+      showCancelButton: true,
+      confirmButtonText: 'Upgrade Now',
+      cancelButtonText: 'Back',
+      confirmButtonColor: '#28a745',
+      cancelButtonColor: '#007bff'
+    }).then(r => {
+      if (r.isConfirmed) window.location.href = 'package.html';
+    });
+  }
+
+  // ✅ Like handler — increases likes correctly
+  function handleEngagement(btn) {
+    const post = btn.closest('.post');
+    const likesEl = post.querySelector('.likes-count');
+    let likes = parseInt(post.getAttribute('data-likes')) || 0;
+
+    if (!canEngage()) {
+      showUpgradeAlert();
+      return;
+    }
+
+    likes += 1; // ✅ always add +1
+    post.setAttribute('data-likes', likes);
+    likesEl.textContent = likes;
+    rewardUser();
+  }
+
+  // ✅ Add comment
+  function addComment(button) {
+    const section = button.closest('.comment-section');
+    const input = section.querySelector('.comment-input');
+    const emoji = section.querySelector('.emoji-picker').value;
+    const list = section.querySelector('.comments-list');
+
+    if (input.value.trim() === '') return;
+    if (!canEngage()) {
+      showUpgradeAlert();
+      return;
+    }
+
+    const comment = document.createElement('div');
+    comment.classList.add('comment-item');
+    comment.textContent = emoji + ' ' + input.value;
+    list.appendChild(comment);
+    input.value = '';
+    rewardUser();
+  }
+
+  // ✅ New feature: image click → show full image
+  document.querySelectorAll('.post img').forEach(img => {
+    img.addEventListener('click', () => {
+      Swal.fire({
+        imageUrl: img.src,
+        imageAlt: 'Full Image',
+        showConfirmButton: false,
+        background: '#000',
+        customClass: {
+          popup: 'swal-wide'
+        }
+      });
+    });
+  });
+
+  // Notify other pages when earnings change
+  window.dispatchEvent(new Event("storage"));
+</script>
+
+</body>
+</html>

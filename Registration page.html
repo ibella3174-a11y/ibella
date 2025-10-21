@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register </title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+      <img src="logo.jpg" alt="Logo" class="logo" />
+      
+    <div class="login-box">
+      <h2>Create your account</h2>
+      <p class="signup-text">Already have an account? <a href="Login.html">Sign in</a></p>
+      <form onsubmit="return register(event)">
+        <label>Full Name</label>
+        <input type="text" id="fullName" required />
+        
+        <label>Username</label>
+        <input type="text" id="username" required />
+        
+        <label>Email Address</label>
+        <input type="email" id="email" required />
+        
+        <label>Password</label>
+        <input type="password" id="password" required />
+        
+        <label>Confirm Password</label>
+        <input type="password" id="confirmPassword" required />
+        
+        <button type="submit">Create Account</button>
+      </form>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+<style>
+ {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: white;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+a {
+  color: #00d1ff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.logo {
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.login-box {
+  background:#c8f0ff;
+  padding: 30px 25px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 200, 255, 0.15);
+}
+
+.login-box h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+  color: black;
+}
+
+.signup-text {
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: black;
+}
+
+form label {
+  display: block;
+  
+  font-size: 14px;
+  margin-bottom: 5px;
+  margin-top: 15px;
+  color: black;
+}
+
+form input {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: white;
+  color: black;
+  box-sizing: border-box; 
+}
+
+form input:focus {
+  outline: 2px solid #00d1ff;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #007bff, #00d1ff);
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+    </style>
+</html>
+
+<script>
+    function register(e) {
+  e.preventDefault();
+
+  const fullName = document.getElementById('fullName').value;
+  const username = document.getElementById('username').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match!");
+    return false;
+  }
+
+  const memberSince = new Date().toLocaleDateString();
+
+  // Save user data to localStorage
+  localStorage.setItem("fullName", fullName);
+  localStorage.setItem("username", username);
+  localStorage.setItem("email", email);
+  localStorage.setItem("password", password);
+  localStorage.setItem("memberSince", memberSince);
+
+  // Redirect to dashboard
+  window.location.href = "Dashboard.html";
+  return false;
+}
+
+</script>

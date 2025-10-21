@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Support</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- ✅ Font Awesome Free CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- ✅ SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #0b0f1c;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      background-color: #111726;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .header button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.4rem;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    /* Main content */
+    .container {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .main-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+      font-size: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      margin: 10px 0;
+    }
+
+    p {
+      color: #aaa;
+      margin-bottom: 25px;
+      font-size: 0.95rem;
+    }
+
+    /* Support options */
+    .support-option {
+      background-color: #141b2d;
+      padding: 15px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    .support-option:hover {
+      background-color: #1e2740;
+    }
+
+    .support-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .support-left .icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-size: 1.6rem;
+      color: #fff;
+    }
+
+    .telegram {
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+    }
+    .email {
+      background: linear-gradient(135deg, #7f00ff, #e100ff);
+    }
+    .channel {
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+    }
+
+    .support-left h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .support-left p {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin: 2px 0 0;
+    }
+
+    .arrow {
+      font-size: 1.4rem;
+      color: #777;
+    }
+
+    /* Bottom nav */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: #111726;
+      padding: 10px 0;
+      border-top: 1px solid #222;
+    }
+
+    .bottom-item {
+      text-align: center;
+      color: #aaa;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .bottom-item:hover {
+      color: #00bfff;
+    }
+
+    .bottom-item i {
+      font-size: 1.3rem;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <button onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+    Customer Support
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="main-icon"><i class="fa-solid fa-comments"></i></div>
+    <h2>How can we help you?</h2>
+    <p>Choose your preferred way to reach our support team. We’re here to assist you!</p>
+
+    <div class="support-option" onclick="window.location.href='https://wa.me/+2347067406333?text=Hello+I+want+to+register+for+ScaleHeight'">
+      <div class="support-left">
+        <div class="icon telegram"><i class="fa-brands fa-whatsapp"></i></div>
+        <div>
+          <h3>Chat on What'sApp</h3>
+          <p>Get instant support via direct message</p>
+        </div>
+      </div>
+      <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+    </div>
+
+  <div class="support-option" onclick="window.location.href='mailto:scaleheight53@gmail.com?subject=Support%20Request&body=Hello%20ScaleHeight%20Team,';">
+
+      <div class="support-left">
+        <div class="icon email"><i class="fa-solid fa-envelope"></i></div>
+        <div>
+          <h3>Email Support</h3>
+          <p>Send us an email and we'll respond within 24 hours</p>
+        </div>
+      </div>
+      <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+    </div>
+
+    <div class="support-option" onclick="window.location.href='https://chat.whatsapp.com/CJ3v2im6NUV2JROTA5pCKS?mode=ems_copy_c'">
+      <div class="support-left">
+        <div class="icon channel"><i class="fa-solid fa-bell"></i></div>
+        <div>
+          <h3>Join Our Channel</h3>
+          <p>Stay updated with announcements and news</p>
+        </div>
+      </div>
+      <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+    </div>
+  </div>
+
+  <!-- ✅ Clickable Bottom Navigation -->
+  <div class="bottom-nav">
+    <div class="bottom-item" onclick="goHome()">
+      <i class="fa-solid fa-house"></i>
+      Home
+    </div>
+    <div class="bottom-item" onclick="restrictedAccess()">
+      <i class="fa-solid fa-video"></i>
+      Videos
+    </div>
+    <div class="bottom-item" onclick="restrictedAccess()">
+      <i class="fa-solid fa-face-smile"></i>
+      Pick Emojis
+    </div>
+    <div class="bottom-item" onclick="goProfile()">
+      <i class="fa-solid fa-user"></i>
+      Me
+    </div>
+  </div>
+
+  <script>
+    function goHome() {
+      window.location.href = "home.html";
+    }
+
+    function goProfile() {
+      window.location.href = "Registration Page.html";
+    }
+
+    // SweetAlert for restricted access
+    function restrictedAccess() {
+      Swal.fire({
+        title: "Starter Plan Required",
+        text: "This feature is only accessible to Starter Plan users.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Upgrade",
+        cancelButtonText: "Back",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        background: "#111726",
+        color: "#fff"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "package.html";
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

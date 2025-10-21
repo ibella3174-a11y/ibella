@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdraw Earnings</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #0e0e10;
+      color: #fff;
+    }
+
+    .container {
+      padding: 20px;
+      padding-bottom: 90px;
+    }
+
+    h1 {
+      color: #00aaff;
+      font-size: 26px;
+      margin-bottom: 5px;
+    }
+
+    p.subtitle {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background-color: #1b1b1f;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .balance-box {
+      background: linear-gradient(135deg, #003366, #004d66);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    .balance-box p {
+      color: #b0b0b0;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .balance-box h2 {
+      color: #00c3ff;
+      font-size: 32px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .withdraw-note {
+      text-align: center;
+      color: #a9a9a9;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      background: linear-gradient(90deg, #007bff, #00d0ff);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .empty-history {
+      text-align: center;
+      color: #888;
+      padding: 20px 0;
+    }
+
+    .empty-history i {
+      font-size: 40px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    /* Footer Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #121212;
+      border-top: 1px solid #222;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      z-index: 10;
+    }
+
+    .bottom-nav a {
+      color: #ccc;
+      text-decoration: none;
+      text-align: center;
+      font-size: 12px;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+
+    .bottom-nav a i {
+      font-size: 20px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .bottom-nav a.active, .bottom-nav a:hover {
+      color: #00aaff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Withdraw Earnings</h1>
+    <p class="subtitle">Request withdrawal of your earned money</p>
+
+    <div class="card">
+      <div class="section-title">Request Withdrawal</div>
+
+      <div class="balance-box">
+        <p>Available Balance</p>
+        <h2 id="balanceAmount">$9.00</h2>
+      </div>
+
+      <div class="withdraw-note">
+        <i class="fa fa-credit-card fa-2x" style="margin-bottom:10px; color:#999;"></i><br>
+        You need at least $15.00 to request a withdrawal.
+      </div>
+
+      <button class="btn" id="startRatingBtn">Start Rating Videos</button>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Withdrawal History</div>
+      <div class="empty-history">
+        <i class="fa fa-file-text-o"></i>
+        <p>No withdrawal requests yet</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <a href="Home.html">
+      <i class="fa fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a id="videosBtn">
+      <i class="fa fa-video-camera"></i>
+      <span>Videos</span>
+    </a>
+    <a id="emojiBtn">
+      <i class="fa-solid fa-face-smile"></i>
+      <span>Pick Emojis</span>
+    </a>
+    <a href="Profile.html">
+      <i class="fa fa-user"></i>
+      <span>Me</span>
+    </a>
+  </div>
+
+  <script>
+    // Unified SweetAlert
+    function restrictedAccess(title, text) {
+      Swal.fire({
+        title: title,
+        text: text,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Upgrade",
+        cancelButtonText: "Back",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        background: "#111726",
+        color: "#fff"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "package.html";
+        }
+      });
+    }
+
+
+    // Start Rating Videos button
+    document.getElementById("startRatingBtn").addEventListener("click", () => {
+      restrictedAccess("Upgrade Required", "Have access to all features and earn more after upgrading.");
+    });
+
+    // Videos icon → alert
+    document.getElementById("videosBtn").addEventListener("click", () => {
+      restrictedAccess("Starter Plan Required", "This feature is only accessible to Starter Plan users.");
+    });
+
+    // ✅ Pick Emojis icon → redirect
+    document.getElementById("emojiBtn").addEventListener("click", () => {
+      window.location.href = "Pick emoji.html";
+    });
+    // 💸 Keep withdraw page balance live
+function updateWithdrawBalance() {
+  const LS = { balance: 'we_balance_usd_v2' };
+  const balance = parseFloat(localStorage.getItem(LS.balance) || '0');
+  document.getElementById('balanceAmount').textContent = '$' + balance.toFixed(2);
+}
+
+// Initial load
+updateWithdrawBalance();
+
+// Live update if emoji page or dashboard changes balance
+window.addEventListener('storage', updateWithdrawBalance);
+
+  </script>
+</body>
+</html>
