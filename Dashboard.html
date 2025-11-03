@@ -253,6 +253,90 @@
       </div>
     </nav>
 
+    <div id="activity-feed"></div>
+
+<style>
+  #activity-feed {
+    background: #fff;
+    padding: 12px 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+    max-width: 420px;
+    margin: 15px auto;
+    border-left: 4px solid blue;
+    animation: fadeIn 0.6s ease;
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+
+  @keyframes fadeOut {
+    from {opacity: 1; transform: translateY(0);}
+    to {opacity: 0; transform: translateY(-10px);}
+  }
+</style>
+
+<script>
+  // ---- USERNAMES ----
+  const usernames = [
+    "Ade", "Ada", "John34", "Grace22", "Tolu", "Faith", "Emeka", "Chika", "Rita",
+    "Kingsley", "David", "Peace", "Sonia", "Daniel007", "Queen", "Lucky", "Blessing",
+    "Michael", "Favour", "Helen", "Bright", "Marvel", "Glory", "Raymond", "Gift",
+    "Hope", "Joy", "Stanley", "Nancy", "Victor", "Esther", "Divine", "Angela",
+    "Samuel", "Ella", "Matthew", "Chris", "Charles", "Ife", "Miracle", "Clara",
+    "Tony", "Felix", "Patience", "Kelvin", "Collins", "Val", "Jennifer", "Henry",
+    "Praise", "Gold", "Maryam", "Ayo", "Philip", "Tochi", "Janet", "Sandra",
+    "Gloria", "Alex", "Moses", "Zion", "Judith", "Linda", "Cynthia", "Precious",
+    "Marvelous", "Mariam", "Prince", "Peace23", "Joyce", "Stella", "Victor98",
+    "Chisom", "Olu", "Opeyemi", "Emma", "Promise", "Debby", "Rebecca", "Godwin",
+    "Chioma", "Uche", "Kenny", "Blessed", "Isaac", "Vivian", "Nora", "Caleb",
+    "Evelyn", "Stan", "Francis", "Jane", "Davidson", "Mercy", "Prosper", "Favor",
+    "Love", "Benny"
+  ];
+
+  // ---- ACTION GROUPS ----
+  const registered = Array(30).fill("just registered");
+  const subscribed = Array(30).fill("just subscribed to the Starter Plan");
+  const withdrawn = Array(30).fill("placed a successful withdrawal");
+  const upgraded = Array(10).fill("just upgraded");
+
+  // Combine all 100 messages
+  const allActions = [...registered, ...subscribed, ...withdrawn, ...upgraded];
+
+  const feed = document.getElementById("activity-feed");
+
+  // ---- RANDOM USERNAME GENERATOR ----
+  function randomUsername() {
+    // 20% chance to use masked username (**** + random digits)
+    return Math.random() < 0.2
+      ? "****" + Math.floor(1000 + Math.random() * 90000)
+      : usernames[Math.floor(Math.random() * usernames.length)];
+  }
+
+  // ---- SHOW RANDOM ACTIVITY ----
+  function showActivity() {
+    const name = randomUsername();
+    const action = allActions[Math.floor(Math.random() * allActions.length)];
+    const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+
+    feed.style.animation = "fadeOut 0.5s ease";
+    setTimeout(() => {
+      feed.textContent = `${name} ${action} • ${time}`;
+      feed.style.animation = "fadeIn 0.5s ease";
+    }, 500);
+  }
+
+  // Start immediately and change every 4 seconds
+  showActivity();
+  setInterval(showActivity, 4000);
+</script>
+    
     <section class="overview">
       <div class="card">
         <div>Videos Watched</div>
