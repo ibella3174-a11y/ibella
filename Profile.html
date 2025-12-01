@@ -31,6 +31,7 @@
       <input type="text" id="profileUsername" readonly />
 
       <h3>Withdrawal Details</h3>
+
 <label>Bank Name</label>
 <select id="bankName">
   <option value="">-- Select Your Bank --</option>
@@ -50,19 +51,32 @@
   <option value="Zenith Bank">Zenith Bank</option>
   <option value="Opay">Opay</option>
   <option value="PalmPay">PalmPay</option>
+   <option value="Sterling bank">Sterling bank</option>
+    <option value="Moniepoint MFB"> Moniepoint MFB</option>
+       <option value="Ecobank Nigeria"> Ecobank Nigeria</option>
+       <option value="Kuda MFB"> Kuda MFB</option>
+          <option value="Sparkle MFB"> Sparkle MFB</option>
+  
 </select>
 
+<label>Account Number</label>
+<input type="text" id="accountNumber" />
 
-      <label>Account Number</label>
-      <input type="text" id="accountNumber" />
+<label>Account Holder Name</label>
+<input type="text" id="accountHolder" />
 
-      <label>Account Holder Name</label>
-      <input type="text" id="accountHolder" />
+<!--  SIDE-BY-SIDE BUTTONS (EXACTLY LIKE SCREENSHOT) -->
+<div class="button-row">
+  <button onclick="saveProfile()" class="update-btn">Update Profile</button>
+  <button onclick="window.location.href='Support.html'" class="support-btn">Contact Support</button>
+</div>
 
-      <button onclick="saveProfile()">Save Profile</button>
-      <button class="logout" onclick="logout()">Logout</button>
+<!--  LOGOUT BUTTON UNDER THEM -->
+<button class="logout" onclick="logout()">Logout</button>
+
     </div>
   </div>
+
   <style>
       * {
   margin: 0;
@@ -83,15 +97,6 @@ body {
   width: 100%;
   max-width: 400px;
   padding: 20px;
-}
-
-.logo {
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 20px;
-  border-radius: 50%;
-  object-fit: cover;
 }
 
 .profile-box {
@@ -127,7 +132,7 @@ label {
   margin-top: 10px;
 }
 
-input {
+input, select {
   width: 100%;
   padding: 10px;
   border-radius: 10px;
@@ -136,83 +141,73 @@ input {
 }
 
 button {
-  width: 100%;
   padding: 12px;
-  margin-top: 15px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(90deg, #007bff, #00d1ff);
   color: white;
   font-weight: bold;
-  font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
 }
 
-button:hover {
-  opacity: 0.9;
+.update-btn {
+  background: linear-gradient(90deg, #007bff, #00d1ff);
+  width: 48%;
+}
+
+.support-btn {
+  background: #333;
+  width: 48%;
 }
 
 .logout {
   background: #ff6666;
-}
-
-select {
   width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  margin-top: 5px;
-  background-color: white;
-  font-size: 14px;
+  margin-top: 15px;
 }
 
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
   </style>
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const username = localStorage.getItem("username");
     const email = localStorage.getItem("email");
 
-    // If no account exists, redirect to registration page
     if (!username || !email) {
       window.location.href = "Registration page.html"; 
       return;
     }
 
-    const fullName = localStorage.getItem("fullName") || "";
-    const phone = localStorage.getItem("phone") || "";
-    const bank = localStorage.getItem("bankName") || "";
-    const accNum = localStorage.getItem("accountNumber") || "";
-    const accHolder = localStorage.getItem("accountHolder") || "";
-    const profilePic = localStorage.getItem("profilePic");
-
-    document.getElementById("profileFullName").value = fullName;
+    document.getElementById("profileFullName").value = localStorage.getItem("fullName") || "";
     document.getElementById("profileUsername").value = username;
     document.getElementById("profileEmail").value = email;
-    document.getElementById("profilePhone").value = phone;
-    document.getElementById("bankName").value = bank;
-    document.getElementById("accountNumber").value = accNum;
-    document.getElementById("accountHolder").value = accHolder;
+    document.getElementById("profilePhone").value = localStorage.getItem("phone") || "";
+    document.getElementById("bankName").value = localStorage.getItem("bankName") || "";
+    document.getElementById("accountNumber").value = localStorage.getItem("accountNumber") || "";
+    document.getElementById("accountHolder").value = localStorage.getItem("accountHolder") || "";
 
+    const profilePic = localStorage.getItem("profilePic");
     if (profilePic) {
       document.getElementById("profilePicPreview").src = profilePic;
     }
   });
 
-  // ===== Upload profile picture =====
   function uploadProfilePic(event) {
     const file = event.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function (e) {
-      const imageData = e.target.result;
-      document.getElementById("profilePicPreview").src = imageData;
-      localStorage.setItem("profilePic", imageData);
+      localStorage.setItem("profilePic", e.target.result);
+      document.getElementById("profilePicPreview").src = e.target.result;
     };
     reader.readAsDataURL(file);
   }
 
-  // ===== Save profile info =====
   function saveProfile() {
     localStorage.setItem("fullName", document.getElementById("profileFullName").value);
     localStorage.setItem("email", document.getElementById("profileEmail").value);
@@ -224,7 +219,6 @@ select {
     alert("Profile updated successfully!");
   }
 
-
   function logout() {
     if (confirm("Are you sure you want to log out?")) {
       localStorage.clear();
@@ -233,6 +227,5 @@ select {
   }
 </script>
 
-
 </body>
-</html>
+  </html>
