@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SCALEHEIGHTS - videos</title>
+
+  <!-- Font Awesome (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root{
+      --bg:#080808;
+      --muted: rgba(255,255,255,0.12);
+      --accent:#00a8ff;
+      --btn-green: #14c914;
+      --card-radius:12px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, "Segoe UI", Roboto, Arial;
+      background:linear-gradient(180deg,#050505 0%, #0b0b0b 100%);
+      color:#fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom:78px; /* room for bottom nav */
+    }
+
+    /* --- Search bar --- */
+    .search-wrap{
+      padding:16px;
+      display:flex;
+      justify-content:center;
+    }
+    .search{
+      width:94%;
+      max-width:720px;
+      background: rgba(255,255,255,0.06);
+      border-radius:22px;
+      padding:10px 14px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .search input{
+      flex:1;
+      border:none;
+      outline:none;
+      background:transparent;
+      color:#fff;
+      font-size:15px;
+    }
+    .search i{color:rgba(255,255,255,0.85); font-size:18px}
+
+    /* --- Hero / Featured slider --- */
+    .hero{
+      position:relative;
+      width:100%;
+      max-width:720px;
+      margin:0 auto;
+      height:460px; /* mobile look */
+      overflow:hidden;
+      border-radius:14px;
+    }
+    .slides{
+      height:100%;
+      display:flex;
+      transition: transform 500ms ease;
+    }
+    .slide{
+      min-width:100%;
+      position:relative;
+      height:100%;
+      overflow:hidden;
+    }
+    .slide img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter:brightness(0.6);
+    }
+
+    .hero-content{
+      position:absolute;
+      left:20px;
+      bottom:26px;
+      z-index:6;
+      max-width:72%;
+    }
+    .hero-title{
+      font-size:28px;
+      font-weight:700;
+      line-height:1.05;
+      margin-bottom:12px;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.7);
+    }
+
+    .hero-actions{display:flex;gap:10px;align-items:center}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 16px;
+      border-radius:10px;
+      border:none;
+      font-weight:600;
+      cursor:pointer;
+      font-size:15px;
+    }
+    .btn-primary{
+      background: linear-gradient(90deg,#18a6ff,#0a6ef0);
+      color:white;
+      box-shadow: 0 6px 20px rgba(10,110,240,0.24);
+    }
+    .btn-secondary{
+      background: rgba(255,255,255,0.06);
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.08);
+    }
+    .btn-secondary.added{
+      background: var(--btn-green);
+      border:none;
+      color:#fff;
+    }
+
+    /* dots */
+    .dots{
+      position:absolute;
+      bottom:12px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:8px;
+      z-index:8;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:10px;
+      background:rgba(255,255,255,0.25);
+      transition:all 200ms;
+    }
+    .dot.active{ width:26px; background:var(--accent); border-radius:12px; height:8px }
+
+    /* --- categories horizontal --- */
+    .categories{
+      margin:18px auto 6px;
+      width:94%;
+      max-width:720px;
+      display:flex;
+      gap:18px;
+      overflow-x:auto;
+      padding:0 8px;
+      scrollbar-width:none; /* firefox */
+    }
+    .categories::-webkit-scrollbar{display:none}
+    .cat{
+      color:rgba(255,255,255,0.85);
+      font-weight:600;
+      padding:6px 8px;
+      white-space:nowrap;
+      position:relative;
+      cursor:pointer;
+      opacity:0.9;
+    }
+    .cat.active {
+  color:#fff;
+  background: rgba(0,168,255,0.25);
+  padding:6px 12px;
+  border-radius:10px;
+}
+.cat.active::after {
+  display:none; /* remove old underline */
+}
+    /* --- rows of video cards --- */
+    .row{
+      margin:12px auto;
+      width:94%;
+      max-width:720px;
+    }
+    .row h3{margin:6px 0 10px; font-size:18px}
+    .cards{
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      padding-bottom:8px;
+    }
+    .card{
+      min-width:140px;
+      border-radius:12px;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.18));
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      color:#fff;
+      flex-shrink:0;
+    }
+    .thumb{position:relative;height:200px; background:#222}
+    .thumb img{width:100%; height:100%; object-fit:cover; display:block}
+    .rating{
+      position:absolute;
+      top:8px; left:8px;
+      background:rgba(0,0,0,0.65);
+      padding:6px 8px;
+      border-radius:8px;
+      font-weight:700;
+      display:flex;
+      gap:6px;
+      align-items:center;
+      font-size:13px;
+    }
+    .card-body{padding:8px 10px;font-size:13px}
+    .meta{color:rgba(255,255,255,0.65); font-size:12px; margin-top:6px}
+    .card-title{font-weight:700; font-size:13px; line-height:1.15}
+
+    /* bottom nav */
+    .bottom-nav{
+      position:fixed;
+      left:12px; right:12px; bottom:12px;
+      height:56px;
+      background: rgba(3,3,3,0.6);
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-around;
+      padding:8px 16px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .bottom-nav a {
+  text-decoration: none;
+  color: inherit;
+}
+    .nav-item{display:flex;flex-direction:column;align-items:center;color:#8c98a6;font-size:12px; gap:6px}
+    .nav-item.active{color:var(--accent)}
+    .nav-item i{font-size:18px}
+
+    /* small screens & polish */
+    @media(min-width:480px){
+      .hero{height:520px}
+      .hero-title{font-size:34px}
+      .thumb{height:160px}
+      .card{min-width:160px}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <div class="search" role="search">
+      <input id="q" type="text" placeholder="Search videos..." aria-label="Search videos">
+      <i class="fa fa-search" aria-hidden="true"></i>
+    </div>
+  </div>
+
+  <!-- HERO / Slider -->
+  <div class="hero" aria-hidden="false">
+    <div class="slides" id="slides">
+      <!-- Slide 1 -->
+      <div class="slide">
+        <img src="image4.jpg" alt="epic moments">
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide">
+        <img src="image1.jpg" alt="lamine yamal">
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide">
+        <img src="image78.jpg" alt="goals">
+      </div>
+    </div>
+
+    <!-- overlay content (keeps the same for demo; could change per slide) -->
+    <div class="hero-content" id="heroContent">
+      <div class="hero-title" id="heroTitle">Epic Moments in Football</div>
+
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="watchBtn"><i class="fa fa-play"></i> Watch Now</button>
+        <button class="btn btn-secondary" id="listBtn"><i class="fa fa-plus" id="listIcon"></i> <span id="listText">My List</span></button>
+      </div>
+    </div>
+
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <!-- Categories -->
+  <div class="categories" id="categories">
+    <div class="cat active">Trending</div>
+    <div class="cat">Athletics</div>
+    <div class="cat">Baseball</div>
+    <div class="cat">Basketball</div>
+    <div class="cat">Boxing</div>
+    <div class="cat">Football</div>
+    <div class="cat">Skate</div>
+    <div class="cat">More</div>
+  </div>
+
+  <!-- Row 1 -->
+  <div class="row">
+    <h3>Row 1</h3>
+    <div class="cards">
+      <article class="card">
+        <div class="thumb">
+          <img src="image2.jpg" alt="">
+          <div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.5</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Epic Moments in Football</div>
+          <div class="meta">1,246 views • 7 days ago</div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="thumb">
+          <img src= "image8.jpg" alt="">
+          <div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.8</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">How Good is Lamine Yamal?</div>
+          <div class="meta">884 views • 7 days ago</div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="thumb">
+          <img src="image7.jpg" alt="">
+          <div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.7</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Barcelona vs BETIS • 5 - 3</div>
+          <div class="meta">662 views • 1 days ago</div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="row">
+    <h3>Row 2</h3>
+    <div class="cards">
+      <article class="card">
+        <div class="thumb">
+          <img src="save.jpg" alt="">
+          <div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 8.1</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Incredible Saves</div>
+          <div class="meta">1,012 views • 9 days ago</div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="thumb">
+          <img src="image3.jpg" alt="">
+          <div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.8</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Top 10 Goals</div>
+          <div class="meta">3,204 views • 12 days ago</div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="thumb">
+          <img src="street.jpg" alt="">
+          <div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.9</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Street Football Tricks</div>
+          <div class="meta">2,612 views • 14 days ago</div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  
+  <!-- Bottom nav -->
+  <nav class="bottom-nav" role="navigation" aria-label="Bottom navigation">
+  <a href="Home.html" class="nav-item">
+    <i class="fa fa-home"></i><div>Home</div>
+  </a>
+
+  <a href="videos.html" class="nav-item active">
+    <i class="fa fa-tv"></i><div>Videos</div>
+  </a>
+
+  <a href="Pick emoji.html" class="nav-item">
+    <i class="fa fa-smile"></i><div>Pick Emojis</div>
+  </a>
+
+  <a href="Profile.html" class="nav-item">
+    <i class="fa fa-user"></i><div>Me</div>
+  </a>
+</nav>
+
+<script>
+  const slidesEl = document.getElementById('slides');
+  const slides = document.querySelectorAll('.slide');
+  const dotsWrap = document.getElementById('dots');
+  const heroTitle = document.getElementById('heroTitle');
+
+  let current = 0;
+  // Demo titles for each slide (match images)
+  const titles = ["Epic Moments in Football", "How Good is Lamine Yamal?", "Top Goals & Highlights"];
+
+  // build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0 ? ' active' : '');
+    d.dataset.index = i;
+    d.addEventListener('click', ()=> goToSlide(i));
+    dotsWrap.appendChild(d);
+  });
+
+  function goToSlide(i){
+    current = i;
+    slidesEl.style.transform = `translateX(-${i*100}%)`;
+    document.querySelectorAll('.dot').forEach((dot,idx) => dot.classList.toggle('active', idx===i));
+    heroTitle.textContent = titles[i] || titles[0];
+  }
+
+  // auto slide
+  let autoSlide = true;
+  let slideInterval = setInterval(()=>{
+    if(!autoSlide) return;
+    current = (current + 1) % slides.length;
+    goToSlide(current);
+  },5000);
+
+  // pause on hover (mobile friendly: pause while touching)
+  slidesEl.addEventListener('mouseenter', ()=> autoSlide=false);
+  slidesEl.addEventListener('mouseleave', ()=> autoSlide=true);
+  slidesEl.addEventListener('touchstart', ()=> autoSlide=false);
+  slidesEl.addEventListener('touchend', ()=> autoSlide=true);
+
+  // ---------- My List button toggle ----------
+  const listBtn = document.getElementById('listBtn');
+  const listText = document.getElementById('listText');
+  const listIcon = document.getElementById('listIcon');
+
+  // persist state in localStorage so it remains toggled for demo
+  const LS_KEY = 'sporty_mylist_demo';
+  let isAdded = localStorage.getItem(LS_KEY) === '1';
+
+  function updateListButton(){
+    if(isAdded){
+      listBtn.classList.add('added');
+      listIcon.className = 'fa fa-check';
+      listText.textContent = 'Added to List';
+    } else {
+      listBtn.classList.remove('added');
+      listIcon.className = 'fa fa-plus';
+      listText.textContent = 'My List';
+    }
+  }
+  updateListButton();
+
+  listBtn.addEventListener('click', ()=>{
+    // toggle
+    isAdded = !isAdded;
+    localStorage.setItem(LS_KEY, isAdded ? '1' : '0');
+    updateListButton();
+  });
+
+  // ---------- Watch Now button (SweetAlert2) ----------
+  const watchBtn = document.getElementById('watchBtn');
+  watchBtn.addEventListener('click', ()=>{
+    Swal.fire({
+      title: "Can't Watch",
+      text: "Upgrade required to watch this video.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Upgrade Now",
+      cancelButtonText: "Okay",
+      reverseButtons: true,
+      background: '#0b0b0b',
+      customClass: {
+        popup: 'swal2-dark'
+      }
+    }).then((res)=>{
+      if(res.isConfirmed){
+        // redirect to upgrade page - change to your URL
+        window.location.href = "Package.html";
+      }
+    });
+  });
+
+  // ---------- Categories active underline behavior ----------
+  document.getElementById('categories').addEventListener('click', (e)=>{
+    const item = e.target.closest('.cat');
+    if(!item) return;
+    document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+    item.classList.add('active');
+
+    // Optionally change hero title / slide based on category (demo)
+    // For this static demo we'll just change title for trending only
+    if(item.textContent.trim() === 'Trending'){
+      heroTitle.textContent = titles[current];
+    } else {
+      heroTitle.textContent = item.textContent.trim();
+    }
+  });
+
+  // small accessibility: allow search Enter to show results (demo)
+  document.getElementById('q').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter'){
+      const q = e.target.value.trim();
+      Swal.fire({
+        title: 'Searching',
+        text: (q ? `No results for "${q}" .` : 'Type something to search.'),
+        icon: 'info',
+        timer: 1400,
+        showConfirmButton: false,
+        background: '#0b0b0b'
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
