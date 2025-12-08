@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ScaleHeight - videos</title>
+
+  <!-- Font Awesome (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root{
+      --bg:#080808;
+      --muted: rgba(255,255,255,0.12);
+      --accent:#00a8ff;
+      --btn-green: #14c914;
+      --card-radius:12px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, "Segoe UI", Roboto, Arial;
+      background:linear-gradient(180deg,#050505 0%, #0b0b0b 100%);
+      color:#fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom:88px; /* room for bottom nav */
+    }
+
+    /* Search */
+    .search-wrap{padding:14px;display:flex;justify-content:center}
+    .search{
+      width:94%; max-width:720px;
+      background: rgba(255,255,255,0.06);
+      border-radius:22px; padding:10px 14px;
+      display:flex; align-items:center; gap:10px;
+      backdrop-filter: blur(8px); border:1px solid rgba(255,255,255,0.04);
+    }
+    .search input{flex:1;border:none;outline:none;background:transparent;color:#fff;font-size:15px}
+    .search i{color:rgba(255,255,255,0.85); font-size:18px}
+
+    /* Hero / slider */
+    .hero{position:relative;width:100%;max-width:720px;margin:0 auto;height:420px;overflow:hidden;border-radius:14px}
+    .slides{height:100%;display:flex;transition: transform 500ms ease}
+    .slide{min-width:100%;position:relative;height:100%;overflow:hidden}
+    .slide img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.6)}
+    .hero-content{position:absolute;left:20px;bottom:26px;z-index:6;max-width:72%}
+    .hero-title{font-size:28px;font-weight:700;line-height:1.05;margin-bottom:12px;text-shadow:0 6px 18px rgba(0,0,0,0.7)}
+    .hero-actions{display:flex;gap:10px;align-items:center}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:none;font-weight:600;cursor:pointer;font-size:15px}
+    .btn-primary{background:linear-gradient(90deg,#18a6ff,#0a6ef0);color:white;box-shadow:0 6px 20px rgba(10,110,240,0.24)}
+    .btn-secondary{background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.08)}
+    .btn-secondary.added{background:var(--btn-green);border:none;color:#fff}
+
+    .dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:8}
+    .dot{width:8px;height:8px;border-radius:10px;background:rgba(255,255,255,0.25);transition:all 200ms}
+    .dot.active{width:26px;background:var(--accent);border-radius:12px;height:8px}
+
+    .categories{margin:18px auto 6px;width:94%;max-width:720px;display:flex;gap:18px;overflow-x:auto;padding:0 8px}
+    .categories::-webkit-scrollbar{display:none}
+    .cat{color:rgba(255,255,255,0.85);font-weight:600;padding:6px 8px;white-space:nowrap;position:relative;cursor:pointer;opacity:0.95}
+    .cat.active{color:#fff}
+    .cat.active::after{content:"";position:absolute;left:8px;right:8px;bottom:-12px;height:3px;background:var(--accent);border-radius:6px}
+     .cat.active {
+  color:#fff;
+  background: rgba(0,168,255,0.25);
+  padding:6px 12px;
+  border-radius:10px;
+}
+.cat.active::after {
+  display:none; /* remove old underline */
+}
+
+    .rows-wrap{width:94%;max-width:720px;margin:0 auto}
+    .row{margin:14px 0}
+    .row h3{margin:6px 0 10px;font-size:16px}
+    .cards{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px}
+    .card{min-width:170px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.18));box-shadow:0 6px 20px rgba(0,0,0,0.5);color:#fff;flex-shrink:0}
+    .thumb{position:relative;height:110px;background:#222}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .rating{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.6);padding:6px 8px;border-radius:8px;font-weight:700;display:flex;gap:6px;align-items:center;font-size:12px}
+    .card-body{padding:8px 10px;font-size:12px}
+    .card-title{font-weight:700;font-size:13px;line-height:1.15}
+    .meta{color:rgba(255,255,255,0.65);font-size:12px;margin-top:6px}
+
+    .bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;background:rgba(3,3,3,0.6);border-radius:14px;display:flex;align-items:center;justify-content:space-around;padding:8px 16px;backdrop-filter:blur(8px);box-shadow:0 8px 30px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.03)}
+    .nav-item{display:flex;flex-direction:column;align-items:center;color:#8c98a6;font-size:12px;gap:6px}
+    .nav-item.active{color:var(--accent)}
+    .nav-item i{font-size:18px}
+      .bottom-nav a {
+  text-decoration: none;
+  color: inherit;
+}
+    .nav-item{display:flex;flex-direction:column;align-items:center;color:#8c98a6;font-size:12px; gap:6px}
+    .nav-item.active{color:var(--accent)}
+    .nav-item i{font-size:18px}
+
+    
+    @media(min-width:480px){
+      .hero{height:520px}
+      .hero-title{font-size:34px}
+      .thumb{height:140px}
+      .card{min-width:180px}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <div class="search" role="search">
+      <input id="q" type="text" placeholder="Search videos..." aria-label="Search videos">
+      <i class="fa fa-search" aria-hidden="true"></i>
+    </div>
+  </div>
+
+  <!-- Hero / Slider -->
+  <div class="hero" aria-hidden="false">
+    <div class="slides" id="slides">
+      <div class="slide"><img src="image4.jpg" alt="hero1"></div>
+      <div class="slide"><img src="image1.jpg" alt="hero2"></div>
+      <div class="slide"><img src="image37.jpg" alt="hero3"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-title" id="heroTitle">Epic Moments in Football</div>
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="watchBtn"><i class="fa fa-play"></i> Watch Now</button>
+        <button class="btn btn-secondary" id="listBtn"><i class="fa fa-plus" id="listIcon"></i> <span id="listText">My List</span></button>
+      </div>
+    </div>
+
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <!-- categories -->
+  <div class="categories" id="categories">
+    <div class="cat active" data-sport="all">Trending</div>
+    <div class="cat" data-sport="football">Football</div>
+    <div class="cat" data-sport="baseball">Baseball</div>
+    <div class="cat" data-sport="basketball">Basketball</div>
+    <div class="cat" data-sport="boxing">Boxing</div>
+    <div class="cat" data-sport="athletics">Athletics</div>
+    <div class="cat" data-sport="skate">Skate</div>
+    <div class="cat" data-sport="more">More</div>
+  </div>
+
+  <!-- Rows container -->
+  <div class="rows-wrap" id="rowsWrap">
+    <!-- We'll render 10 rows each with 4 cards. For brevity we produce them statically here (40 cards). -->
+    <!-- Row 1 -->
+    <section class="row">
+      <h3>Row 1</h3>
+      <div class="cards">
+        <article class="card" data-sport="football" data-title="Epic Moments in Football">
+          <div class="thumb"><img src="image27.jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.5</div></div>
+          <div class="card-body"><div class="card-title">Best Moments in Football</div><div class="meta">1,246 views • 7 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="football" data-title="How Good is Lamine Yamal?">
+          <div class="thumb"><img src="image8.jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.8</div></div>
+          <div class="card-body"><div class="card-title">How Good is Lamine Yamal?</div><div class="meta">884 views • 7 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="football" data-title="Barcelona vs Betis • 5-3">
+          <div class="thumb"><img src="image7.jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.7</div></div>
+          <div class="card-body"><div class="card-title">Barcelona vs City • 5 - 0</div><div class="meta">662 views • 7 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="baseball" data-title="Baseball Highlights">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1646504458774-dbad0e941c14?fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c3BvcnRzJTIwYmFsbHN8ZW58MHx8MHx8fDA%3D&ixlib=rb-4.1.0&q=70&w=2400" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.7</div></div>
+          <div class="card-body"><div class="card-title">Baseball Highlights</div><div class="meta">1,012 views • 9 days ago</div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Row 2 -->
+    <section class="row">
+      <h3>Row 2</h3>
+      <div class="cards">
+        <article class="card" data-sport="basketball" data-title="Top 10 Basketball Plays">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=800&q=60" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.8</div></div>
+          <div class="card-body"><div class="card-title">Top 10 Basketball Plays</div><div class="meta">3,204 views • 12 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="boxing" data-title="Boxing Knockouts">
+          <div class="thumb"><img src="mqdefault (18).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.9</div></div>
+          <div class="card-body"><div class="card-title">Boxing Knockouts</div><div class="meta">2,612 views • 14 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="football" data-title="Young Talents Montage">
+          <div class="thumb"><img src="image1.jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 4.0</div></div>
+          <div class="card-body"><div class="card-title">Young Talents Montage</div><div class="meta">4,204 views • 2 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="athletics" data-title="Amazing Sprint Finishes">
+          <div class="thumb"><img src="mqdefault (10).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.6</div></div>
+          <div class="card-body"><div class="card-title">Rivalry</div><div class="meta">920 views • 3 days ago</div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Row 3 -->
+    <section class="row">
+      <h3>Row 3</h3>
+      <div class="cards">
+        <article class="card" data-sport="skate" data-title="Skate Tricks">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1504215680853-026ed2a45def?w=800&q=60" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.7</div></div>
+          <div class="card-body"><div class="card-title">Skate Tricks</div><div class="meta">2,612 views • 5 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="baseball" data-title="MLB Best Plays">
+          <div class="thumb"><img src="mqdefault (1).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.9</div></div>
+          <div class="card-body"><div class="card-title">MLB Best Plays</div><div class="meta">3,012 views • 8 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="basketball" data-title="Dunk Comp Highlights">
+          <div class="thumb"><img src="mqdefault (13).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 4.1</div></div>
+          <div class="card-body"><div class="card-title">Dunk Comp Highlights</div><div class="meta">5,100 views • 6 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="football" data-title="Iconic Goals">
+          <div class="thumb"><img src="image37.jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 4.3</div></div>
+          <div class="card-body"><div class="card-title">Iconic Goals</div><div class="meta">8,240 views • 20 days ago</div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Row 4 -->
+    <section class="row">
+      <h3>Row 4</h3>
+      <div class="cards">
+        <article class="card" data-sport="boxing" data-title="Legendary Fights">
+          <div class="thumb"><img src="mqdefault (17).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.6</div></div>
+          <div class="card-body"><div class="card-title">Legendary Fights</div><div class="meta">990 views • 10 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="football" data-title="Skills & Tricks">
+          <div class="thumb"><img src="image78.jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.9</div></div>
+          <div class="card-body"><div class="card-title">Skills & Tricks</div><div class="meta">1,560 views • 11 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="athletics" data-title="Field Events Highlights">
+          <div class="thumb"><img src="mqdefault (5).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.4</div></div>
+          <div class="card-body"><div class="card-title">Field Events Highlights</div><div class="meta">480 views • 1 month ago</div></div>
+        </article>
+
+        <article class="card" data-sport="baseball" data-title="Home Run Moments">
+          <div class="thumb"><img src="mqdefault (11).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 4.0</div></div>
+          <div class="card-body"><div class="card-title">Home Run Moments</div><div class="meta">2,120 views • 3 days ago</div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Row 5 -->
+    <section class="row">
+      <h3>Row 5</h3>
+      <div class="cards">
+       <article class="card" data-sport="basketball" data-title="Streetball Legends">
+          <div class="thumb"><img src="mqdefault (14).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.8</div></div>
+          <div class="card-body"><div class="card-title">Streetball Legends</div><div class="meta">3,712 views • 13 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="boxing" data-title="Ringside Highlights">
+          <div class="thumb"><img src="mqdefault (20).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.2</div></div>
+          <div class="card-body"><div class="card-title">Ringside Highlights</div><div class="meta">610 views • 8 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="football" data-title="Youth League Goals">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1705593973313-75de7bf95b56?fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3RhZGl1bSUyMGNyb3dkfGVufDB8fDB8fHww&ixlib=rb-4.1.0&q=70&w=2400" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.7</div></div>
+          <div class="card-body"><div class="card-title">Youth League Goals</div><div class="meta">1,880 views • 4 days ago</div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Row 6 -->
+    <section class="row">
+      <h3>Row 6</h3>
+      <div class="cards">
+        <article class="card" data-sport="baseball" data-title="Pitching Masterclass">
+          <div class="thumb"><img src="mqdefault (12).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.8</div></div>
+          <div class="card-body"><div class="card-title">Pitching Masterclass</div><div class="meta">2,320 views • 7 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="athletics" data-title="Marathon Moments">
+          <div class="thumb"><img src="mqdefault (7).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.4</div></div>
+          <div class="card-body"><div class="card-title">Marathon Moments</div><div class="meta">2,900 views • 22 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="football" data-title="Free Kick Mastery">
+          <div class="thumb"><img src="save.jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 4.2</div></div>
+          <div class="card-body"><div class="card-title">Free Kick Mastery</div><div class="meta">6,120 views • 1 day ago</div></div>
+        </article>
+
+        <article class="card" data-sport="boxing" data-title="Training Sparring">
+          <div class="thumb"><img src="mqdefault (21).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.3</div></div>
+          <div class="card-body"><div class="card-title">Training Sparring</div><div class="meta">420 views • 6 days ago</div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Row 7 -->
+    <section class="row">
+      <h3>Row 7</h3>
+      <div class="cards">
+        <article class="card" data-sport="skate" data-title="Skate Bowl Action">
+          <div class="thumb"><img src="mqdefault (4).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.6</div></div>
+          <div class="card-body"><div class="card-title">Skate Bowl Action</div><div class="meta">1,120 views • 7 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="basketball" data-title="Clutch Shots">
+          <div class="thumb"><img src="mqdefault (16).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.9</div></div>
+          <div class="card-body"><div class="card-title">Clutch Shots</div><div class="meta">2,404 views • 10 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="baseball" data-title="Fielding Mastery">
+          <div class="thumb"><img src="mqdefault (1).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.5</div></div>
+          <div class="card-body"><div class="card-title">Fielding Mastery</div><div class="meta">980 views • 9 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="football" data-title="Last Minute Winners">
+          <div class="thumb"><img src="image4.jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 4.0</div></div>
+          <div class="card-body"><div class="card-title">Last Minute Winners</div><div class="meta">9,120 views • 2 days ago</div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Row 8 -->
+    <section class="row">
+      <h3>Row 8</h3>
+      <div class="cards">
+        <article class="card" data-sport="athletics" data-title="Hurdles Show">
+          <div class="thumb"><img src="mqdefault (6).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.7</div></div>
+          <div class="card-body"><div class="card-title">Hurdles Show</div><div class="meta">1,012 views • 3 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="boxing" data-title="Speed Combinations">
+          <div class="thumb"><img src="mqdefault (22).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.6</div></div>
+          <div class="card-body"><div class="card-title">Speed Combinations</div><div class="meta">540 views • 12 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="basketball" data-title="Rookie Highlights">
+          <div class="thumb"><img src="mqdefault (15).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.7</div></div>
+          <div class="card-body"><div class="card-title">Rookie Highlights</div><div class="meta">2,180 views • 1 week ago</div></div>
+        </article>
+
+        <article class="card" data-sport="football" data-title="Penalty Shootouts">
+          <div class="thumb"><img src="image37.jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 4.4</div></div>
+          <div class="card-body"><div class="card-title">Penalty Shootouts</div><div class="meta">11,120 views • 1 day ago</div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Row 9 -->
+    <section class="row">
+      <h3>Row 9</h3>
+      <div class="cards">
+        <article class="card" data-sport="baseball" data-title="Glove Saves">
+          <div class="thumb"><img src="mqdefault (11).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.8</div></div>
+          <div class="card-body"><div class="card-title">Glove Saves</div><div class="meta">1,120 views • 8 days ago</div></div>
+        </article>
+        <article class="card" data-sport="football" data-title="Rivalry Classics">
+          <div class="thumb"><img src="street.jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 4.1</div></div>
+          <div class="card-body"><div class="card-title">Rivalry Classics</div><div class="meta">7,312 views • 30 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="basketball" data-title="Playoff Intensity">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=800&q=60" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 4.0</div></div>
+          <div class="card-body"><div class="card-title">Playoff Intensity</div><div class="meta">4,512 views • 12 days ago</div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Row 10 -->
+    <section class="row">
+      <h3>Row 10</h3>
+      <div class="cards">
+        <article class="card" data-sport="athletics" data-title="Decathlon Highlights">
+          <div class="thumb"><img src="mqdefault (8).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.7</div></div>
+          <div class="card-body"><div class="card-title">Decathlon Highlights</div><div class="meta">1,120 views • 17 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="boxing" data-title="Pros in Action">
+          <div class="thumb"><img src="mqdefault (19).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.5</div></div>
+          <div class="card-body"><div class="card-title">Pros in Action</div><div class="meta">1,980 views • 9 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="football" data-title="Club Montage">
+          <div class="thumb"><img src="mqdefault (10).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 4.2</div></div>
+          <div class="card-body"><div class="card-title">Club Montage</div><div class="meta">12,980 views • 2 days ago</div></div>
+        </article>
+
+        <article class="card" data-sport="baseball" data-title="Season Recap">
+          <div class="thumb"><img src="mqdefault (2).jpg" alt=""><div class="rating"><i class="fa fa-star" style="color:#ffd54a"></i> 3.9</div></div>
+          <div class="card-body"><div class="card-title">Season Recap</div><div class="meta">2,760 views • 6 days ago</div></div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <!-- bottom navigation -->
+ <nav class="bottom-nav" role="navigation" aria-label="Bottom navigation">
+  <a href="Home.html" class="nav-item">
+    <i class="fa fa-home"></i><div>Home</div>
+  </a>
+
+  <a href="videos.html" class="nav-item active">
+    <i class="fa fa-tv"></i><div>Videos</div>
+  </a>
+
+  <a href="Pick emoji.html" class="nav-item">
+    <i class="fa fa-smile"></i><div>Pick Emojis</div>
+  </a>
+
+  <a href="Profile.html" class="nav-item">
+    <i class="fa fa-user"></i><div>Me</div>
+  </a>
+</nav>
+
+<script>
+  // Slider (same as earlier)
+  const slidesEl = document.getElementById('slides');
+  const slides = document.querySelectorAll('.slide');
+  const dotsWrap = document.getElementById('dots');
+  const heroTitle = document.getElementById('heroTitle');
+
+  let current = 0;
+  const titles = ["Epic Moments in Football", "How Good is Lamine Yamal?", "Top Goals & Highlights"];
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0 ? ' active' : '');
+    d.dataset.index = i;
+    d.addEventListener('click', ()=> goToSlide(i));
+    dotsWrap.appendChild(d);
+  });
+  function goToSlide(i){
+    current = i;
+    slidesEl.style.transform = `translateX(-${i*100}%)`;
+    document.querySelectorAll('.dot').forEach((dot,idx) => dot.classList.toggle('active', idx===i));
+    heroTitle.textContent = titles[i] || titles[0];
+  }
+  let autoSlide = true;
+  setInterval(()=>{ if(!autoSlide) return; current=(current+1)%slides.length; goToSlide(current); },5000);
+  slidesEl.addEventListener('mouseenter', ()=> autoSlide=false);
+  slidesEl.addEventListener('mouseleave', ()=> autoSlide=true);
+  slidesEl.addEventListener('touchstart', ()=> autoSlide=false);
+  slidesEl.addEventListener('touchend', ()=> autoSlide=true);
+
+  // My List toggle (persisted)
+  const listBtn = document.getElementById('listBtn');
+  const listText = document.getElementById('listText');
+  const listIcon = document.getElementById('listIcon');
+  const LS_KEY = 'sporty_mylist_demo';
+  let isAdded = localStorage.getItem(LS_KEY) === '1';
+  function updateListButton(){
+    if(isAdded){
+      listBtn.classList.add('added');
+      listIcon.className = 'fa fa-check';
+      listText.textContent = 'Added to List';
+    } else {
+      listBtn.classList.remove('added');
+      listIcon.className = 'fa fa-plus';
+      listText.textContent = 'My List';
+    }
+  }
+  updateListButton();
+  listBtn.addEventListener('click', ()=>{
+    isAdded = !isAdded;
+    localStorage.setItem(LS_KEY, isAdded ? '1' : '0');
+    updateListButton();
+  });
+
+  // Watch Now button SweetAlert
+  const watchBtn = document.getElementById('watchBtn');
+  watchBtn.addEventListener('click', ()=>{
+    Swal.fire({
+      title: "Can't Watch",
+      text: "Upgrade required to watch this video.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Upgrade Now",
+      cancelButtonText: "Okay",
+      reverseButtons: true,
+      background: '#0b0b0b',
+    }).then((res)=>{
+      if(res.isConfirmed){
+        // Placeholder redirect (per your choice 2)
+        window.location.href = "Package.html";
+      }
+    });
+  });
+
+  // --- Video click: show upgrade SweetAlert ---
+  // Select all cards
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', (e) => {
+      // Avoid triggering when user clicks on 'My List' (we don't have that inside cards)
+      const title = card.dataset.title || 'This video';
+      Swal.fire({
+        title: `${title}`,
+        text: "You must upgrade to watch this video.",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Upgrade Now",
+        cancelButtonText: "Okay",
+        reverseButtons: true,
+        background: '#0b0b0b',
+      }).then((res)=>{
+        if(res.isConfirmed){
+          // redirect to upgrade page - placeholder
+          window.location.href = "Package.html";
+        }
+      });
+    });
+  });
+
+  // --- Category filtering ---
+  const categoriesEl = document.getElementById('categories');
+  categoriesEl.addEventListener('click', (e) => {
+    const item = e.target.closest('.cat');
+    if(!item) return;
+    document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+    item.classList.add('active');
+
+    const sport = item.dataset.sport || 'all';
+    filterBySport(sport);
+  });
+
+  function filterBySport(sport){
+    const allCards = document.querySelectorAll('.card');
+    if(sport === 'all'){
+      // show all
+      allCards.forEach(c => c.style.display = '');
+      return;
+    }
+    allCards.forEach(c => {
+      const s = c.dataset.sport || '';
+      c.style.display = (s === sport) ? '' : 'none';
+    });
+  }
+
+  // --- Search (demo) ---
+  document.getElementById('q').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter'){
+      const q = e.target.value.trim();
+      Swal.fire({
+        title: 'Search',
+        text: q ? `No results on this page. You searched: "${q}"` : 'Type something to search.',
+        icon: 'info',
+        timer: 1400,
+        showConfirmButton: false,
+        background: '#0b0b0b'
+      });
+    }
+  });
+
+  // Accessibility: keyboard navigation for cards (optional)
+  cards.forEach(c => {
+    c.setAttribute('tabindex','0');
+    c.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') c.click(); });
+  });
+
+</script>
+</body>
+</html>
