@@ -8,7 +8,7 @@
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -687,6 +687,45 @@ if (!localStorage.getItem("we_registered_once")) {
     .join-btn:hover {
       background-color: #0056b3;
     }
+      .gift-share {
+  position: fixed;
+  bottom: 90px;
+  right: 18px;
+  width: 55px;
+  height: 55px;
+  background: linear-gradient(135deg, #4facfe, #6a11cb);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 22px;
+  text-decoration: none;
+  box-shadow: 0 8px 18px rgba(37, 211, 102, 0.45);
+  z-index: 999;
+  animation: pulse 1.8s infinite;
+}
+
+.gift-share i {
+  animation: wiggle 1.8s infinite;
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(37, 211, 102, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+  75% { transform: rotate(-6deg); }
+}
   </style>
 </head>
 <body>
@@ -742,5 +781,20 @@ Upgrade your SCALEHEIGHT plan today and get ready to scale smarter 🚀
       popupOverlay.style.display = "none";
     });
   </script>
+  <script>
+function shareOnWhatsApp() {
+  const message =
+`🎁 I just earned on ScaleHeight 💸🔥
+
+Join me and start earning too 👇
+https://scaleheightslogin.netlify.app/`;
+
+  const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+}
+  </script>
+  <a href="javascript:void(0)" class="gift-share" onclick="shareOnWhatsApp()">
+  <i class="fa-solid fa-gift"></i>
+  </a>
 </body>
 </html>
